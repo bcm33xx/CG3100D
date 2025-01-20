@@ -1,0 +1,5 @@
+*.o
+*.elf
+/LzmaDecode.c
+/LzmaDecode.h
+/LzmaTypes.h
