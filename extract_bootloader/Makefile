@@ -6,8 +6,9 @@ URL := https://github.com/openwrt/openwrt/raw/refs/heads/main/target/linux/bmips
 CC		:= $(CROSS_COMPILE)gcc
 LD		:= $(CROSS_COMPILE)ld
 
-CFLAGS		= -O0
-CFLAGS		+= -D_LZMA_PROB32
+CFLAGS		= -O0 -ggdb
+CFLAGS		+= -ggdb \
+		-D_LZMA_PROB32 -D_LZMA_NO_SYSTEM_SIZE_T -D_LZMA_PROB32 
 
 LDFLAGS		=  -lc -dynamic-linker /lib64/ld-linux-x86-64.so.2 \
 		/usr/lib/x86_64-linux-gnu/crt1.o \
@@ -15,6 +16,9 @@ LDFLAGS		=  -lc -dynamic-linker /lib64/ld-linux-x86-64.so.2 \
 		/usr/lib/x86_64-linux-gnu/crtn.o
 
 .PHONY: clean
+
+all: check_and_download_lzma main.elf 
+	@echo "Final FLASH_BLOB is set to: $(FLASH_BLOB)"
 
 check_and_download_lzma: $(LZMA_FILES)
 
@@ -32,5 +36,4 @@ clean:
 	rm -f *.o
 	rm -f main.elf
 
-all: check_and_download_lzma main.elf 
-	@echo "Final FLASH_BLOB is set to: $(FLASH_BLOB)"
+

@@ -4,6 +4,11 @@
 
 #include "LzmaDecode.h"
 
+// #define __int8 char
+// #define __int16 short
+// #define _WORD int16_t
+// #define BOOL int
+
 static uint8_t* readFlashBlob(char* blobPath) {
 	// File pointer
 	FILE *file;
@@ -61,5 +66,20 @@ int main() {
 	int ret = LzmaDecodeProperties(&lzmaState.Properties, flashBlob + lzmaBlobOffset, LZMA_PROPERTIES_SIZE);
 	printf("LzmaDecodeProperties(0x%08X) returns %d\n", lzmaBlobOffset, ret);
 	printf("Properties (lc, lp, pb): %d, %d, %d\n", lzmaState.Properties.lc, lzmaState.Properties.lp, lzmaState.Properties.pb);
+
+	printf("%d\n", (1536 << ((lzmaState.Properties.lc) + (lzmaState.Properties.lp))) + 3692);
+	lzmaState.Probs = malloc(0x80000);
+
+	uint32_t blSize = 0x80000;
+	uint8_t* bl = malloc(blSize);
+	uint32_t inSizeProcessed = 0;
+	uint32_t outSizeProcessed = 0;
+	ret = LzmaDecode(&lzmaState,
+		flashBlob + lzmaBlobOffset + LZMA_PROPERTIES_SIZE, lzmaBlobSize - LZMA_PROPERTIES_SIZE, &inSizeProcessed,
+		bl, blSize, &outSizeProcessed);
+
+	printf("%d\n", ret);
+	printf("inSizeProcessed = %d\n", inSizeProcessed);
+	printf("outSizeProcessed = %d\n", outSizeProcessed);
 	return 0;
 }
