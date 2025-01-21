@@ -1,5 +1,7 @@
 *.o
 *.elf
+*.bin
 /LzmaDecode.c
 /LzmaDecode.h
 /LzmaTypes.h
+/7z
